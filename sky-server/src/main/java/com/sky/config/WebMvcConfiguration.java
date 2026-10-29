@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.cbor.MappingJackson2CborHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -71,8 +72,14 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
+
+    /**
+     * Springboot接收到http消息后，会从已注册的专门处理http消息的消息转换器HttpMessageConverter列表中，选择合适http消息转换器，
+     * 如果是json格式的数据，则会默认选择MappingJackson2HttpMessageConverter，然后使用它内部的对象转换器ObjectMapper实现转换
+     * @param converters
+     */
     protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        MappingJackson2CborHttpMessageConverter converter = new MappingJackson2CborHttpMessageConverter();
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter ();
 
         //需要为消息转换器设置一个对象转换器，对象转换器可以将Java对象序列化成json数据
         converter.setObjectMapper(new JacksonObjectMapper());
